@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
+import FullWidthImage from 'react-native-fullwidth-image'
 
 import * as Device from 'expo-device';
 import * as FileSystem from 'expo-file-system';
@@ -38,22 +39,22 @@ export default class HomeScreen extends Component {
   // const navigation = useNavigation();
 
   componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
+    // this.timerID = setInterval(
+    //   () => this.tick(),
+    //   1000
+    // );
     this.onPageLoad();
   }
 
   componentWillUnmount() {
-    clearInterval(this.timerID);
+    // clearInterval(this.timerID);
   }
 
-  tick() {
-    this.setState({
-      date: new Date()
-    });
-  }
+  // tick() {
+  //   this.setState({
+  //     date: new Date()
+  //   });
+  // }
 
   onPageLoad = () => {
     this.setState(previousState => (
@@ -62,75 +63,21 @@ export default class HomeScreen extends Component {
     this.dataStorageService.loadExistingValuesFromStorage(
       // If story is already loaded and is started then do nothing as everything should already be on the
       // device
-      () => {  
-          // First check if the story is loaded
-          this.storyIsLoaded = this.dataStorageService.getIfStoryIsLoaded();                    
-          if (!this.storyIsLoaded) {
-              this.reloadStory(
-                  () => {
-                    // this.storyIsLoaded = true;
-                    this.dataStorageService.setStoryIsFullyLoaded(true);
-                    // after the first story reload we update the appVersion in the data store
-                    // this should prevent forced re-download of images next time the app starts
-                    this.dataStorageService.setAppVersionNumber(this.state.appVersion);
-                    // this.storyIsStarted = false;
-                    // this.loadingData = false;                                
-                    this.loadBackgroundMusic();
-                    this.setState(previousState => (
-                      {
-                        storyIsLoaded: true,
-                        storyIsStarted: false,
-                        loadingData: false,
-                      }
-                    ));
-                  }
-              );
-          }
-          else {
-              // Also check if the app has been updated
-              var appVersionNumberInStorage = this.dataStorageService.getAppVersionNumber();
-              if (appVersionNumberInStorage != this.state.appVersion) {
-                  this.loadingDataMessage = "Downloading new images...";
-                  this.getExistingUploadedImages(() => {
-                      this.updateLocalImageCache(() => {
-                        this.dataStorageService.setAppVersionNumber(this.state.appVersion);
-                        // this.storyIsStarted = this.dataStorageService.getIfStoryIsStarted();
-                        // this.loadingData = false;
-                        this.setState(previousState => (
-                          {
-                            storyIsStarted: this.dataStorageService.getIfStoryIsStarted(),
-                            loadingData: false,
-                          }
-                        ));
-                        this.loadBackgroundMusic();
-                      });
-                  });
-              }
-              else {
-                  // this.storyIsStarted = this.dataStorageService.getIfStoryIsStarted();
-                  // this.loadingData = false;
-                  this.setState(previousState => (
-                    {
-                      storyIsStarted: this.dataStorageService.getIfStoryIsStarted(),
-                      loadingData: false,
-                    }
-                  ));
-                  this.loadBackgroundMusic();
-              }
-          }
-      },
-      // if story has never been loaded then reload story
       () => {
-          //alert("reloading");
-          this.reloadStory(
-              () => {
+        console.log('first function');
+        // First check if the story is loaded
+        this.storyIsLoaded = this.dataStorageService.getIfStoryIsLoaded();                    
+        if (!this.storyIsLoaded) {
+            this.reloadStory(
+                () => {
                   // this.storyIsLoaded = true;
                   this.dataStorageService.setStoryIsFullyLoaded(true);
                   // after the first story reload we update the appVersion in the data store
                   // this should prevent forced re-download of images next time the app starts
                   this.dataStorageService.setAppVersionNumber(this.state.appVersion);
                   // this.storyIsStarted = false;
-                  // this.loadingData = false;
+                  // this.loadingData = false;                                
+                  this.loadBackgroundMusic();
                   this.setState(previousState => (
                     {
                       storyIsLoaded: true,
@@ -138,11 +85,68 @@ export default class HomeScreen extends Component {
                       loadingData: false,
                     }
                   ));
-                  this.loadBackgroundMusic();
+                }
+            );
+        }
+        else {
+            // Also check if the app has been updated
+            var appVersionNumberInStorage = this.dataStorageService.getAppVersionNumber();
+            if (appVersionNumberInStorage != this.state.appVersion) {
+                this.loadingDataMessage = "Downloading new images...";
+                this.getExistingUploadedImages(() => {
+                    this.updateLocalImageCache(() => {
+                      this.dataStorageService.setAppVersionNumber(this.state.appVersion);
+                      // this.storyIsStarted = this.dataStorageService.getIfStoryIsStarted();
+                      // this.loadingData = false;
+                      this.setState(previousState => (
+                        {
+                          storyIsStarted: this.dataStorageService.getIfStoryIsStarted(),
+                          loadingData: false,
+                        }
+                      ));
+                      this.loadBackgroundMusic();
+                    });
+                });
+            }
+            else {
+                // this.storyIsStarted = this.dataStorageService.getIfStoryIsStarted();
+                // this.loadingData = false;
+                this.setState(previousState => (
+                  {
+                    storyIsStarted: this.dataStorageService.getIfStoryIsStarted(),
+                    loadingData: false,
+                  }
+                ));
+                this.loadBackgroundMusic();
+            }
+        }
+      },
+      // if story has never been loaded then reload story
+      () => {
+        console.log('second function');
+        //alert("reloading");
+        this.reloadStory(
+          () => {
+            console.log('done reloading story');
+            // this.storyIsLoaded = true;
+            this.dataStorageService.setStoryIsFullyLoaded(true);
+            // after the first story reload we update the appVersion in the data store
+            // this should prevent forced re-download of images next time the app starts
+            this.dataStorageService.setAppVersionNumber(this.state.appVersion);
+            // this.storyIsStarted = false;
+            // this.loadingData = false;
+            this.setState(previousState => (
+              {
+                storyIsLoaded: true,
+                storyIsStarted: false,
+                loadingData: false,
               }
-          );
+            ));
+            this.loadBackgroundMusic();
+          }
+        );
       }
-  );
+    );
   }
 
   loadBackgroundMusic = () => {
@@ -172,9 +176,7 @@ export default class HomeScreen extends Component {
     var storyInstanceGuid = this.generateNewStoryInstanceGuid();
     this.dataStorageService.setActiveStoryInstanceGuid(storyInstanceGuid);
     var deviceInfo = this.getDeviceInformation(storyInstanceGuid);
-    console.log(deviceInfo);
-    //this.http.get('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/GetStoryActiveConfiguration/1').map(res => res.json()).subscribe(data => {
-    // this.http.post('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/GetStoryActiveConfigurationWithLogging/1', deviceInfo).map(res => res.json()).subscribe(data => {
+    // console.log(deviceInfo);
     fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/GetStoryActiveConfigurationWithLogging/1', {
       method: 'POST',
       headers: {
@@ -254,6 +256,7 @@ export default class HomeScreen extends Component {
             });                
         }
         this.dataStorageService.setListStoryImageDetails(listStoryImageDetails);
+        console.log('doing stuff');
         onSuccess();
     });
   }
@@ -262,7 +265,7 @@ export default class HomeScreen extends Component {
     var imageNumber = i + 1;
     var listStoryImageDetails = this.dataStorageService.getListStoryImageDetails();
     this.loadingDataMessage = "Downloading Image " + imageNumber + " of " + listStoryImageDetails.length;
-    console.log("listStoryImageDetails.length: " + listStoryImageDetails.length);
+    // console.log("listStoryImageDetails.length: " + listStoryImageDetails.length);
     if (i < listStoryImageDetails.length) {
         var listLocalImageLocations = this.dataStorageService.getListLocalImageLocations();
         var storyImageDetail = listStoryImageDetails[i];
@@ -276,7 +279,7 @@ export default class HomeScreen extends Component {
             }
         }
         if (imageFound) {
-            console.log("Image Found: " + storyImageDetail.imageFilenameInStorage);
+            // console.log("Image Found: " + storyImageDetail.imageFilenameInStorage);
             // do a check for the image locally and make sure it's actually on the device                
             var fileName = storyImageDetail.imageFilenameInStorage;
             var fileExt = "jpg";
@@ -284,7 +287,7 @@ export default class HomeScreen extends Component {
             var targetPath = FileSystem.documentDirectory + localStorageFileName;
             // checkFile returns boolean on if file exists
             FileSystem.getInfoAsync(FileSystem.documentDirectory + localStorageFileName).then((fileExists) => {
-                console.log("File Exists: " + fileExists.exists);
+                // console.log("File Exists: " + fileExists.exists);
                 // On first update to new app version
                 // On IOS at least (and maybe on all platforms just to be safe)
                 // We will trigger a re-downloading of all images once
@@ -338,6 +341,7 @@ export default class HomeScreen extends Component {
         }
     }
     else {
+      console.log('end of the queue');
         // The end of the queue has been reached so process the onSuccess
         onSuccess();
     }
@@ -345,6 +349,7 @@ export default class HomeScreen extends Component {
 
   updateLocalImageCache = (onSuccess) => {
     var listStoryImageDetails = this.dataStorageService.getListStoryImageDetails();
+    console.log(listStoryImageDetails.length);
     if (listStoryImageDetails.length > 0) {
         this.loadingDataMessage = "Downloading Image 1 of " + listStoryImageDetails.length;
         console.log("hi");
@@ -359,7 +364,7 @@ export default class HomeScreen extends Component {
     var localStorageFileName = fileName + "." + fileExt;
     var url = "https://makeyourownadventuremobilebackend.azurewebsites.net/api/story/DownloadFile/" + fileName;
     //var url = "http://localhost:17861/api/story/DownloadFile/" + fileName;
-    console.log("url: " + url);
+    // console.log("url: " + url);
     // definitely use file.dataDirectory as file.documentsDirectory actually saves to the 
     // users documents folder, meaning they would see the files in other apps
 
@@ -376,12 +381,12 @@ export default class HomeScreen extends Component {
 
     var targetPath = FileSystem.documentDirectory + localStorageFileName;
     var trustHosts = true;
-    console.log("targetPath: " + targetPath);
+    // console.log("targetPath: " + targetPath);
     // var fileTransfer = this.transfer.create();
     FileSystem.downloadAsync(url, targetPath)
       .then((result) => {
         console.log('successful download');
-        console.log(result);
+        // console.log(result);
         onSuccess(targetPath, imageDetails);
       })
       .catch((err) => {
@@ -527,12 +532,11 @@ export default class HomeScreen extends Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
-            <Text>It is {this.state.date.toLocaleTimeString()}.</Text>
             <Image
               source={
                 __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
+                  ? require('../assets/images/Inspector-and-Captain.png')
+                  : require('../assets/images/Inspector-and-Captain.png')
               }
               style={styles.welcomeImage}
             />
@@ -581,11 +585,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeImage: {
-    width: 100,
-    height: 80,
+    width: 533,
+    height: 300,
     resizeMode: 'contain',
     marginTop: 3,
-    marginLeft: -10,
+    // marginLeft: -10,
   },
   getStartedContainer: {
     alignItems: 'center',

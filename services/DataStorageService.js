@@ -188,10 +188,13 @@ export class DataStorageService {
   }
 
   setAppVersionNumber = (appVersionNumber) => {
-      this.appVersionNumber = appVersionNumber;
-      // this.storage.ready().then(() => {
-          AsyncStorage.setItem('appVersionNumber', this.appVersionNumber);
-      // });
+    console.log('setting appVersionNumber');
+    console.log(appVersionNumber);
+    this.appVersionNumber = appVersionNumber;
+    console.log(this.appVersionNumber);
+    // this.storage.ready().then(() => {
+        AsyncStorage.setItem('appVersionNumber', this.appVersionNumber.toString());
+    // });
   }
   setStoryIsFullyLoaded = (storyIsLoaded) => {
       this.storyIsFullyLoaded = storyIsLoaded;

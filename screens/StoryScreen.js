@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Image,
+  Button,
   Platform,
   ScrollView,
   StyleSheet,
@@ -8,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-// import { DataStorageService } from '../services/DataStorageService';
+import FullWidthImage from 'react-native-fullwidth-image'
 
 export default class StoryScreen extends Component {
   constructor(props) {
@@ -121,39 +122,15 @@ export default class StoryScreen extends Component {
         }
       }
     }
-    let activeMetrics = this.renderActiveMetrics();
+    // let activeMetrics = this.renderActiveMetrics();
     return (
-      <View style={styles.helpContainer}>
-        {storyContentArray}
-        {pageTransitionsArray}
-        {activeMetrics}
-      </View>
-    );
-  }
-
-  renderStoryPage = () => {
-    return (
-      <View style={styles.helpContainer}>
-        <TouchableOpacity onPress={this.btnClickContinueCase} style={styles.helpLink}>
-          <Text style={styles.helpLinkText}>
-            Continue Case
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.btnClickRestartCase} style={styles.helpLink}>
-          <Text style={styles.helpLinkText}>
-            Restart Case
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.btnClickGoToSettings} style={styles.helpLink}>
-          <Text style={styles.helpLinkText}>
-            Settings
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.btnClickGoToScoreHistory} style={styles.helpLink}>
-          <Text style={styles.helpLinkText}>
-            Case Records
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <View style={styles.storyContentContainer}>
+          {storyContentArray}
+        </View>
+        <View style={styles.transitionsContainer}>
+          {pageTransitionsArray}
+        </View>
       </View>
     );
   }
@@ -171,10 +148,10 @@ export default class StoryScreen extends Component {
       }
       if (contentType == "text") {
         if (!isAnnecdote) {
-          const contentWithLineBreaks = content.replace(new RegExp('\r?\n', 'g'), '<br />');
+          // const contentWithLineBreaks = content.replace(new RegExp('\r?\n', 'g'), '<br />');
           return (
             <Text style={styles.helpLinkText}>
-              {contentWithLineBreaks}
+              {content}
             </Text>
           );
         }
@@ -233,11 +210,13 @@ export default class StoryScreen extends Component {
       // divTransitionHolder.appendChild(aTransitionLink);
       // var divStoryHolder = document.getElementById("divStoryHolder");
       // divStoryHolder.appendChild(divTransitionHolder);
-      return <TouchableOpacity onPress={() => { this.processTransition(transitionTarget) }} style={styles.helpLink}>
-        <Text style={styles.helpLinkText}>
-          {transitionText}
-        </Text>
-      </TouchableOpacity>;
+      // return <TouchableOpacity onPress={() => { this.processTransition(transitionTarget) }} style={styles.transitionContainer}>
+      return  <View style={styles.transitionContainer}>
+          <Button style={styles.transitionText} title={transitionText} onPress={() => { this.processTransition(transitionTarget) }} >
+            {transitionText}
+          </Button>
+        </View>;
+      // </TouchableOpacity>;
   }
 
   renderPageTransitionStoryEnd = () => {
@@ -298,17 +277,21 @@ export default class StoryScreen extends Component {
       }
       if (activeMetric.metricLastChangeAmount != 0) {
         metrics.push(
-          <Text style={styles.helpLinkText}>
-            {activeMetric.metricName} :  {activeMetric.metricValue} {"(" + metricLastChangeAmountString + ")"}
-          </Text>
+          <View style={styles.individualMetricContainer}>
+            <Text style={styles.metricText}>
+              {activeMetric.metricName} :  {activeMetric.metricValue} {"(" + metricLastChangeAmountString + ")"}
+            </Text>
+          </View>
         );
         // $("#divScoresHolder").append('<ion-col col-6 col-xs><ion-row><ion-col col-6 col-xs>' + activeMetric.metricName + '</ion-col><ion-col col-6 col-xs>' + activeMetric.metricValue + '<span> (' + metricLastChangeAmountString + ')</span>' + '</ion-col></ion-row></ion-col>');
       }
       else {
         metrics.push(
-          <Text style={styles.helpLinkText}>
-            {activeMetric.metricName} :  {activeMetric.metricValue}
-          </Text>
+          <View style={styles.individualMetricContainer}>
+            <Text style={styles.metricText}>
+              {activeMetric.metricName} :  {activeMetric.metricValue}
+            </Text>
+          </View>
         );
         // $("#divScoresHolder").append('<ion-col col-6 col-xs><ion-row><ion-col col-6 col-xs>' + activeMetric.metricName + '</ion-col><ion-col col-6 col-xs>' + activeMetric.metricValue + '</ion-col></ion-row></ion-col>');
       }
@@ -388,7 +371,7 @@ export default class StoryScreen extends Component {
 
   generateHtmlForStoryImage = (localImageUrl) => {
     console.log(localImageUrl);
-    return <Image
+    return <FullWidthImage
       source={{uri: localImageUrl}}
       style={styles.welcomeImage}
     />;
@@ -400,10 +383,12 @@ export default class StoryScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.mainContainer}>
+        <View style={styles.metricContainer}>
+          {this.renderActiveMetrics()}
+        </View>
         <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}>
+          style={styles.scrollContainer}>
           {this.renderStory()}
         </ScrollView>
       </View>
@@ -413,9 +398,56 @@ export default class StoryScreen extends Component {
 
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  metricContainer: {
+    backgroundColor: '#fff',
+    height: 30,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 6,
+    // flex: 1,
+    flexDirection: 'row',
+    // textAlign: 'right',
+    // color: 'black',
+    // fontWeight: 'bold',
+  },
+  individualMetricContainer: {
+    flex: 1
+  },
+  metricText: {
+    textAlign: 'center',
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  scrollContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 30,
+    paddingBottom: 30,
+  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  //   paddingLeft: 10,
+  //   paddingRight: 10,
+  //   marginBottom: 30,
+  // },
+  transitionContainer: {
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  transitionText: {
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    // fontWeight: 'bold',
+    // fontStyle: 'italic',
   },
   developmentModeText: {
     marginBottom: 20,
@@ -425,7 +457,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   contentContainer: {
-    paddingTop: 30,
+    // marginTop: 10,
+    marginBottom: 100,
+    alignItems: 'center',
+  },
+  storyContentContainer: {
+    textAlign: 'left',
+  },
+  transitionsContainer: {
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
   },
   welcomeContainer: {
     alignItems: 'center',
@@ -433,11 +475,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeImage: {
-    width: 100,
-    height: 80,
+    // width: '100%',
+    // height: '100%',
     resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
+    marginTop: 10,
+    marginBottom: 10,
+    // marginLeft: 10,
+    // marginRight: 10
   },
   getStartedContainer: {
     alignItems: 'center',
@@ -487,10 +531,6 @@ const styles = StyleSheet.create({
   },
   navigationFilename: {
     marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
   },
   helpLink: {
     paddingVertical: 15,
