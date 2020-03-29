@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { MonoText } from '../components/StyledText';
+// import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+
 import * as Device from 'expo-device';
 import * as FileSystem from 'expo-file-system';
 import { DataStorageService } from '../services/DataStorageService';
@@ -27,8 +29,13 @@ export default class HomeScreen extends Component {
       musicLoaded: false,
       date: new Date(),
     };
+    console.log(props);
+    this.navigation = props.navigation;
+    // this.navigation = useNavigation();
     this.dataStorageService = new DataStorageService();
   }
+
+  // const navigation = useNavigation();
 
   componentDidMount() {
     this.timerID = setInterval(
@@ -65,7 +72,7 @@ export default class HomeScreen extends Component {
                     this.dataStorageService.setStoryIsFullyLoaded(true);
                     // after the first story reload we update the appVersion in the data store
                     // this should prevent forced re-download of images next time the app starts
-                    this.dataStorageService.setAppVersionNumber(this.appVersion);
+                    this.dataStorageService.setAppVersionNumber(this.state.appVersion);
                     // this.storyIsStarted = false;
                     // this.loadingData = false;                                
                     this.loadBackgroundMusic();
@@ -82,11 +89,11 @@ export default class HomeScreen extends Component {
           else {
               // Also check if the app has been updated
               var appVersionNumberInStorage = this.dataStorageService.getAppVersionNumber();
-              if (appVersionNumberInStorage != this.appVersion) {
+              if (appVersionNumberInStorage != this.state.appVersion) {
                   this.loadingDataMessage = "Downloading new images...";
                   this.getExistingUploadedImages(() => {
                       this.updateLocalImageCache(() => {
-                        this.dataStorageService.setAppVersionNumber(this.appVersion);
+                        this.dataStorageService.setAppVersionNumber(this.state.appVersion);
                         // this.storyIsStarted = this.dataStorageService.getIfStoryIsStarted();
                         // this.loadingData = false;
                         this.setState(previousState => (
@@ -121,7 +128,7 @@ export default class HomeScreen extends Component {
                   this.dataStorageService.setStoryIsFullyLoaded(true);
                   // after the first story reload we update the appVersion in the data store
                   // this should prevent forced re-download of images next time the app starts
-                  this.dataStorageService.setAppVersionNumber(this.appVersion);
+                  this.dataStorageService.setAppVersionNumber(this.state.appVersion);
                   // this.storyIsStarted = false;
                   // this.loadingData = false;
                   this.setState(previousState => (
@@ -284,8 +291,11 @@ export default class HomeScreen extends Component {
                 // This is because for some reason, new app versions are not rendering
                 // images that were downloaded by earlier versions (possibly security issue?)
                 var savedAppVersion = this.dataStorageService.getAppVersionNumber();
+                console.log(savedAppVersion);
+                console.log(this.state.appVersion);
                 // If the file does not exist, or if the app version is new, we should re-download
-                if (!fileExists.exists || savedAppVersion != this.appVersion) {
+                if (!fileExists.exists || savedAppVersion != this.state.appVersion) {
+                  console.log('downloading file');
                     // file is missing so download it
                     //console.log("Downloading File: " + JSON.stringify(storyImageDetail));
                     this.downloadFileFromCloud(storyImageDetail,
@@ -303,6 +313,7 @@ export default class HomeScreen extends Component {
                     );
                 }
                 else {
+                  console.log('skipping file download');
                     // we already have the file so process the next one
                     this.imageDownloadSubloop(i + 1, onSuccess);
                 }
@@ -379,7 +390,7 @@ export default class HomeScreen extends Component {
       });
   }
 
-  renderStartMenu = () => {
+  renderStartMenu = (navigation) => {
     if (this.state.loadingData) {
       console.log('render loadingDataMessage component');
       return (
@@ -441,7 +452,7 @@ export default class HomeScreen extends Component {
     }
   }
 
-  btnClickRestartCase(event) {
+  btnClickRestartCase = (event) => {
     this.setState(previousState => (
       {
         loadingData: true,
@@ -453,7 +464,7 @@ export default class HomeScreen extends Component {
       this.dataStorageService.setStoryIsFullyLoaded(true);
       // after the first story reload we update the appVersion in the data store
       // this should prevent forced re-download of images next time the app starts
-      this.dataStorageService.setAppVersionNumber(this.appVersion);
+      this.dataStorageService.setAppVersionNumber(this.state.appVersion);
       // this.storyIsStarted = false;
       // this.loadingData = false;
       this.setState(previousState => (
@@ -469,37 +480,43 @@ export default class HomeScreen extends Component {
     });        
   }
 
-  btnClickContinueCase(event) {
+  btnClickContinueCase = (event) => {
     var storyIsCompleted = this.dataStorageService.getIsStoryCompleted();
     if (storyIsCompleted) {
       // this.navCtrl.push(StoryComplete, {});
     }
     else {
+      this.navigation.navigate('Story', { dataStorageService: this.dataStorageService, isContinuingStory: true });
       // this.navCtrl.push(Story, {
       //     isContinuingStory: true
       // });
     }
   }
 
-  btnClickBeginStory(event) {
+  btnClickBeginStory = (event) => {
     // this.navCtrl.push(Story, {
     //   isContinuingStory: false
     // });
+    // console.log(this);
+    // console.log(this.props);
+    // console.log(this.navigation);
+    // console.log(navigation);
+    this.navigation.navigate('Story', { dataStorageService: this.dataStorageService, isContinuingStory: false });
   }
 
-  btnClickGoToCongratulationScreen(event) {
+  btnClickGoToCongratulationScreen = (event) => {
     // this.navCtrl.push(StoryComplete, {});
   }
 
-  btnClickGoToScoreScreen(event) {
+  btnClickGoToScoreScreen = (event) => {
     // this.navCtrl.push(ScoreScreen, {});
   }
 
-  btnClickGoToSettings(event) {
+  btnClickGoToSettings = (event) => {
     // this.navCtrl.push(Settings, {});
   }
 
-  btnClickGoToScoreHistory(event) {
+  btnClickGoToScoreHistory = (event) => {
     // this.navCtrl.push(ScoreHistory, {});
   }
 
@@ -520,7 +537,7 @@ export default class HomeScreen extends Component {
               style={styles.welcomeImage}
             />
           </View>
-          {this.renderStartMenu()}
+          {this.renderStartMenu(this.navigation)}
         </ScrollView>
         {/* <View style={styles.tabBarInfoContainer}>
           <Text style={styles.tabBarInfoText}>
@@ -542,41 +559,6 @@ export default class HomeScreen extends Component {
 HomeScreen.navigationOptions = {
   header: null,
 };
-
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use
-        useful development tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
-
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/development-mode/'
-  );
-}
-
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/up-and-running/#cant-see-your-changes'
-  );
-}
 
 const styles = StyleSheet.create({
   container: {

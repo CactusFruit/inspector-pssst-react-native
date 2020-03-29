@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
+import StoryScreen from './screens/StoryScreen';
 
 // import AppNavigator from './navigation/AppNavigator';
 
@@ -32,6 +33,7 @@ export default function App(props) {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Story" component={StoryScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </View>
