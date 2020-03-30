@@ -128,7 +128,7 @@ export class DataStorageService {
               console.log("activeStoryConfiguration val:");
               console.log(val);
               if (val) {
-                  this.activeStoryConfiguration = val;
+                  this.activeStoryConfiguration = JSON.parse(val);
                   onActiveStoryConfigurationFound();
               }
               else {
@@ -205,19 +205,19 @@ export class DataStorageService {
   setActiveStoryId = (storyId) => {
       this.activeStoryId = storyId;
       // this.storage.ready().then(() => {
-          AsyncStorage.setItem('activeStoryId', this.activeStoryId);
+          AsyncStorage.setItem('activeStoryId', this.activeStoryId.toString());
       // });
   }
   setActiveStoryInstanceGuid = (storyInstanceGuid) => {
       this.activeStoryInstanceGuid = storyInstanceGuid;
       // this.storage.ready().then(() => {
-          AsyncStorage.setItem('activeStoryInstanceGuid', this.activeStoryInstanceGuid);
+          AsyncStorage.setItem('activeStoryInstanceGuid', this.activeStoryInstanceGuid.toString());
       // });
   }
   setActiveStoryConfiguration = (storyConfiguration) => {
       this.activeStoryConfiguration = storyConfiguration;
       // this.storage.ready().then(() => {
-          AsyncStorage.setItem('activeStoryConfiguration', this.activeStoryConfiguration);
+          AsyncStorage.setItem('activeStoryConfiguration', JSON.stringify(this.activeStoryConfiguration));
       // });
   }
   setActiveStoryChapter = (storyChapter) => {
@@ -247,13 +247,13 @@ export class DataStorageService {
   setMusicVolume = (musicVolume) => {
       this.musicVolume = musicVolume;
       // this.storage.ready().then(() => {
-          AsyncStorage.setItem('musicVolume', this.musicVolume);
+          AsyncStorage.setItem('musicVolume', this.musicVolume.toString());
       // });
   }
   setTextSize = (textSize) => {
       this.textSize = textSize;
       // this.storage.ready().then(() => {
-          AsyncStorage.setItem('textSize', this.textSize);
+          AsyncStorage.setItem('textSize', this.textSize.toString());
       // });
   }
   setStoryIsCompleted = (storyIsCompleted) => {

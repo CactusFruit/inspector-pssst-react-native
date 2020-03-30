@@ -157,14 +157,17 @@ export default class StoryScreen extends Component {
         }
         else {
           // Annecdotes just render as a clickable * symbol that when clicked initiates a popup with the story content
-          const styleObject = {
-            color: 'blue',
-            cursor: 'pointer',
-            fontSize: this.state.textSize + 10 + 'px',
-          };
+          // const styleObject = {
+          //   color: 'blue',
+          //   cursor: 'pointer',
+          //   fontSize: this.state.textSize + 10 + 'px',
+          // };
           return (
-            <Text style={styles.helpLinkText} onClick={() => { this.openAnecdote(content) }} >
-              *
+            // <Text style={styles.helpLinkText} onClick={() => { this.openAnecdote(content) }} >
+            //   *
+            // </Text>
+            <Text style={styles.annecdoteText}>
+              {content}
             </Text>
           );
         }
@@ -421,6 +424,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontWeight: 'bold',
+  },
+  annecdoteText: {
+    fontStyle: 'italic',
+    textAlign: 'right',
+    paddingLeft: 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
   scrollContainer: {
     flex: 1,

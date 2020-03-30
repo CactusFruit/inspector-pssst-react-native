@@ -197,6 +197,9 @@ export default class HomeScreen extends Component {
           this.updateLocalImageCache(onSuccess);
         });
       }
+    })
+    .catch((error) => {
+      console.log(error);
     });
   }
 
@@ -258,6 +261,9 @@ export default class HomeScreen extends Component {
         this.dataStorageService.setListStoryImageDetails(listStoryImageDetails);
         console.log('doing stuff');
         onSuccess();
+    })
+    .catch((error) => {
+      console.log(error);
     });
   }
 
@@ -395,7 +401,7 @@ export default class HomeScreen extends Component {
       });
   }
 
-  renderStartMenu = (navigation) => {
+  renderStartMenu = () => {
     if (this.state.loadingData) {
       console.log('render loadingDataMessage component');
       return (
@@ -479,6 +485,7 @@ export default class HomeScreen extends Component {
           loadingData: false,
         }
       ));
+      this.navigation.navigate('Story', { dataStorageService: this.dataStorageService, isContinuingStory: false });
       // this.navCtrl.push(Story, {
       //     isContinuingStory: false
       // });
@@ -489,6 +496,7 @@ export default class HomeScreen extends Component {
     var storyIsCompleted = this.dataStorageService.getIsStoryCompleted();
     if (storyIsCompleted) {
       // this.navCtrl.push(StoryComplete, {});
+      
     }
     else {
       this.navigation.navigate('Story', { dataStorageService: this.dataStorageService, isContinuingStory: true });
@@ -543,18 +551,6 @@ export default class HomeScreen extends Component {
           </View>
           {this.renderStartMenu(this.navigation)}
         </ScrollView>
-        {/* <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>
-            This is a tab bar. You can edit it in:
-          </Text>
-
-          <View
-            style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>
-              navigation/MainTabNavigator.js
-            </MonoText>
-          </View>
-        </View> */}
       </View>
     );
   }
