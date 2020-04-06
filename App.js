@@ -9,6 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import StoryScreen from './screens/StoryScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import { YellowBox } from 'react-native';
 
 YellowBox.ignoreWarnings([
@@ -38,6 +39,7 @@ export default function App(props) {
           <Stack.Navigator>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Story" component={StoryScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </View>

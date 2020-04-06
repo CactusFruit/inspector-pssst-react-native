@@ -167,7 +167,7 @@ export default class StoryScreen extends Component {
             //   *
             // </Text>
             <Text style={styles.annecdoteText}>
-              {content}
+              * {content}
             </Text>
           );
         }
@@ -350,6 +350,7 @@ export default class StoryScreen extends Component {
         console.log(data);
       });
       // this.content.scrollToTop(1000);
+      this.refs.storyScrollView.scrollTo({y: 0});
       this.setState({
         isContinuingStory: false,
         activeStoryChapter: storyChapter.chapterTitle,
@@ -391,6 +392,7 @@ export default class StoryScreen extends Component {
           {this.renderActiveMetrics()}
         </View>
         <ScrollView
+          ref='storyScrollView'
           style={styles.scrollContainer}>
           {this.renderStory()}
         </ScrollView>

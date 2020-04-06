@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import FullWidthImage from 'react-native-fullwidth-image'
 
@@ -155,18 +155,23 @@ export default class HomeScreen extends Component {
         // this.nativeAudio.preloadComplex('uniqueId2', 'assets/audio/funny53.wav', 1, 1, 0).then(this.loopBackgroundMusic, function (error) {
         //     console.log("error loading background music");
         // });
+        const soundObject = new Audio.Sound();
+        soundObject.loadAsync(require('../assets/audio/funny53.wav'))
+          .then(() => {
+            this.musicLoaded = true;
+            var musicVolume = this.dataStorageService.getMusicVolume();
+            console.log("Music Volume: " + musicVolume);
+            if (musicVolume > 0) {
+              soundObject.setVolumeAsync(musicVolume);
+              soundObject.setIsLoopingAsync(true);
+              soundObject.playAsync();
+            }
+            // Your sound is playing!
+          })
+          .catch(error => {
+            // An error occurred!
+          });
     }
-  }
-
-  loopBackgroundMusic = () => {
-      this.musicLoaded = true;
-      var musicVolume = this.dataStorageService.getMusicVolume();
-      console.log("Music Volume: " + musicVolume);
-      if (musicVolume > 0) {
-          // this.nativeAudio.setVolumeForComplexAsset('uniqueId2', musicVolume / 100);
-          // console.log("beginning loop of background music");
-          // this.nativeAudio.loop('uniqueId2');
-      }        
   }
 
   reloadStory = (onSuccess) => {
@@ -527,6 +532,7 @@ export default class HomeScreen extends Component {
 
   btnClickGoToSettings = (event) => {
     // this.navCtrl.push(Settings, {});
+    this.navigation.navigate('Settings', { dataStorageService: this.dataStorageService });
   }
 
   btnClickGoToScoreHistory = (event) => {

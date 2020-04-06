@@ -16,7 +16,7 @@ export class DataStorageService {
   activeVariables = [];
   scoreHistory = [];
   storyIsCompleted = false;
-  musicVolume = 10;
+  musicVolume = 0.2;
   textSize = 20;
 
   resetStoryVariables = () => {
