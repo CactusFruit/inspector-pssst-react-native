@@ -150,7 +150,7 @@ export default class StoryScreen extends Component {
         if (!isAnnecdote) {
           // const contentWithLineBreaks = content.replace(new RegExp('\r?\n', 'g'), '<br />');
           return (
-            <Text style={styles.helpLinkText}>
+            <Text style={[styles.helpLinkText, {fontSize: this.state.textSize}]}>
               {content}
             </Text>
           );
@@ -166,7 +166,7 @@ export default class StoryScreen extends Component {
             // <Text style={styles.helpLinkText} onClick={() => { this.openAnecdote(content) }} >
             //   *
             // </Text>
-            <Text style={styles.annecdoteText}>
+            <Text style={[styles.annecdoteText, {fontSize: this.state.textSize}]}>
               * {content}
             </Text>
           );
@@ -187,13 +187,13 @@ export default class StoryScreen extends Component {
       }
   }
 
-  openAnecdote = (anecdoteContent) => {
-      console.log("Opening Footnote");
-      console.log("textSize: " + this.state.textSize);        
-      var navData = { anecdoteContent: anecdoteContent, textSize: this.textSize };
-      let anecdoteModal = this.modalCtrl.create(Anecdote, navData);
-      anecdoteModal.present();
-  }
+  // openAnecdote = (anecdoteContent) => {
+  //     console.log("Opening Footnote");
+  //     console.log("textSize: " + this.state.textSize);        
+  //     var navData = { anecdoteContent: anecdoteContent, textSize: this.textSize };
+  //     let anecdoteModal = this.modalCtrl.create(Anecdote, navData);
+  //     anecdoteModal.present();
+  // }
 
   renderPageTransition = (pageTransition) => {
       console.log("rendering page transition");
@@ -216,7 +216,7 @@ export default class StoryScreen extends Component {
       // return <TouchableOpacity onPress={() => { this.processTransition(transitionTarget) }} style={styles.transitionContainer}>
       return  <View style={styles.transitionContainer}>
           <Button style={styles.transitionText} title={transitionText} onPress={() => { this.processTransition(transitionTarget) }} >
-            {transitionText}
+            
           </Button>
         </View>;
       // </TouchableOpacity>;
@@ -281,7 +281,7 @@ export default class StoryScreen extends Component {
       if (activeMetric.metricLastChangeAmount != 0) {
         metrics.push(
           <View style={styles.individualMetricContainer}>
-            <Text style={styles.metricText}>
+            <Text style={[styles.metricText, {fontSize: this.state.textSize - 4}]}>
               {activeMetric.metricName} :  {activeMetric.metricValue} {"(" + metricLastChangeAmountString + ")"}
             </Text>
           </View>
@@ -291,7 +291,7 @@ export default class StoryScreen extends Component {
       else {
         metrics.push(
           <View style={styles.individualMetricContainer}>
-            <Text style={styles.metricText}>
+            <Text style={[styles.metricText, {fontSize: this.state.textSize - 4}]}>
               {activeMetric.metricName} :  {activeMetric.metricValue}
             </Text>
           </View>

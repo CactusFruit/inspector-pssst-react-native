@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Audio } from 'expo-av';
 import Slider from "react-native-slider";
 import FullWidthImage from 'react-native-fullwidth-image'
 
@@ -21,26 +22,97 @@ export default class SettingsScreen extends Component {
     this.navigation = props.navigation;
     this.route = props.route;
     this.dataStorageService = props.route.params.dataStorageService;
+    this.volumeController = props.route.params.volumeController;
+    let currentVolume = this.dataStorageService.getMusicVolume();
+    let currentTextSize = this.dataStorageService.getTextSize();
+    console.log("current volume");
+    console.log(currentVolume);
+    console.log("current text size");
+    console.log(currentTextSize);
     this.state = {
-      value: 2
+      value: currentVolume,
+      textSize: currentTextSize
     };
   }
 
+  updateVolume = (newVolume) => {
+    console.log('new volume');
+    console.log(newVolume);
+    const previousVolume = this.state.value;
+    this.setState(previousState => (
+      { value: newVolume.value }
+    ));
+    this.dataStorageService.setMusicVolume(newVolume.value);
+    if (newVolume.value > 0) {
+      if (previousVolume === 0) {
+        const soundObject = new Audio.Sound();
+        this.volumeController = soundObject;
+        soundObject.loadAsync(require('../assets/audio/funny53.wav'))
+          .then(() => {
+            soundObject.setVolumeAsync(newVolume.value/10.0);
+            soundObject.setIsLoopingAsync(true);
+            soundObject.playAsync();
+            // Your sound is playing!
+          })
+          .catch(error => {
+            // An error occurred!
+          });
+      }
+      this.volumeController.setVolumeAsync(newVolume.value/10.0);
+    }
+    else {
+      this.volumeController.stopAsync().then(() => {
+        this.volumeController.unloadAsync();
+      });
+    }
+  }
+
+  updateTextSize = (newTextSize) => {
+    console.log('new text size');
+    console.log(newTextSize);
+    this.setState(previousState => (
+      { textSize: newTextSize.textSize }
+    ));
+    this.dataStorageService.setTextSize(newTextSize.textSize);
+    if (newTextSize.textSize > 0) {
+      
+    }
+  }
+
   render() {
+    console.log(this.state.value);
+    console.log(this.state.textSize);
+    console.log(isNaN(this.state.textSize));
     return (
       <View style={styles.mainContainer}>
         <ScrollView
           ref='storyScrollView'
           style={styles.scrollContainer}>
+          <Text style={styles.menuOptionText}>
+              Music Volume
+          </Text>
           <Slider
             value={this.state.value}
             minimumValue={0}
             maximumValue={10}
             step={1}
-            onValueChange={value => this.setState({ value })}
+            onValueChange={value => this.updateVolume({ value })}
           />
           <Text>
             Value: {this.state.value}
+          </Text>
+          <Text style={styles.menuOptionText}>
+              Text Size
+          </Text>
+          <Slider
+            value={this.state.textSize}
+            minimumValue={12}
+            maximumValue={56}
+            step={4}
+            onValueChange={textSize => this.updateTextSize({ textSize })}
+          />
+          <Text>
+            Value: {this.state.textSize}
           </Text>
         </ScrollView>
       </View>
@@ -50,6 +122,10 @@ export default class SettingsScreen extends Component {
 
 
 const styles = StyleSheet.create({
+  menuOptionText: {
+    fontSize: 24,
+    marginTop: 24
+  },
   container: {
     flex: 1,
     marginLeft: 10,

@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 
 export class DataStorageService {
 
-  appVersionNumber = 0.0;
+  appVersionNumber = 0.1;
   storyIsFullyLoaded = false;
   activeStoryId = 1;
   activeStoryInstanceGuid = "";
@@ -16,7 +16,7 @@ export class DataStorageService {
   activeVariables = [];
   scoreHistory = [];
   storyIsCompleted = false;
-  musicVolume = 0.2;
+  musicVolume = 2;
   textSize = 20;
 
   resetStoryVariables = () => {
@@ -78,7 +78,7 @@ export class DataStorageService {
           });
           AsyncStorage.getItem('listStoryImageDetails').then((val) => {
               if (val) {
-                console.log(val);
+                // console.log(val);
                 this.listStoryImageDetails = JSON.parse(val);
               }
           });
@@ -113,9 +113,17 @@ export class DataStorageService {
               }
           });
           AsyncStorage.getItem('musicVolume').then((val) => {
-              console.log("existing music volume: " + val);
-              if (val || val == 0) {
-                  this.musicVolume = val;
+              console.log(JSON.stringify(val[0]));
+              console.log('hi there');
+              try {
+                var musicVolume = parseInt(val);
+                console.log("existing music volume: " + musicVolume);
+                if (!isNaN(musicVolume)) {
+                  this.musicVolume = musicVolume;
+                }
+              }
+              catch (e) {
+
               }
           });  
           AsyncStorage.getItem('textSize').then((val) => {
@@ -126,7 +134,7 @@ export class DataStorageService {
           });
           AsyncStorage.getItem('activeStoryConfiguration').then((val) => {
               console.log("activeStoryConfiguration val:");
-              console.log(val);
+              // console.log(val);
               if (val) {
                   this.activeStoryConfiguration = JSON.parse(val);
                   onActiveStoryConfigurationFound();
@@ -178,10 +186,21 @@ export class DataStorageService {
       return this.scoreHistory;
   }
   getMusicVolume = () => {
-      return this.musicVolume;
+    if (this.musicVolume !== null && !isNaN(parseFloat(this.musicVolume))) {
+      return parseInt(this.musicVolume);
+    }
+    else {
+      return 2;
+    }
   }
   getTextSize = () => {
-      return this.textSize;
+    // return this.textSize;
+    if (this.textSize !== null && !isNaN(parseFloat(this.textSize))) {
+      return parseInt(this.textSize);
+    }
+    else {
+      return 20;
+    }
   }
   getIsStoryCompleted = () => {
       return this.storyIsCompleted;

@@ -34,6 +34,7 @@ export default class HomeScreen extends Component {
     this.navigation = props.navigation;
     // this.navigation = useNavigation();
     this.dataStorageService = new DataStorageService();
+    this.volumeController = null;
   }
 
   // const navigation = useNavigation();
@@ -152,17 +153,15 @@ export default class HomeScreen extends Component {
   loadBackgroundMusic = () => {
     if (!this.musicLoaded) {
         console.log("loading background music");
-        // this.nativeAudio.preloadComplex('uniqueId2', 'assets/audio/funny53.wav', 1, 1, 0).then(this.loopBackgroundMusic, function (error) {
-        //     console.log("error loading background music");
-        // });
         const soundObject = new Audio.Sound();
+        this.volumeController = soundObject;
         soundObject.loadAsync(require('../assets/audio/funny53.wav'))
           .then(() => {
             this.musicLoaded = true;
             var musicVolume = this.dataStorageService.getMusicVolume();
             console.log("Music Volume: " + musicVolume);
             if (musicVolume > 0) {
-              soundObject.setVolumeAsync(musicVolume);
+              soundObject.setVolumeAsync(musicVolume/10.0);
               soundObject.setIsLoopingAsync(true);
               soundObject.playAsync();
             }
@@ -532,7 +531,7 @@ export default class HomeScreen extends Component {
 
   btnClickGoToSettings = (event) => {
     // this.navCtrl.push(Settings, {});
-    this.navigation.navigate('Settings', { dataStorageService: this.dataStorageService });
+    this.navigation.navigate('Settings', { dataStorageService: this.dataStorageService, volumeController: this.volumeController });
   }
 
   btnClickGoToScoreHistory = (event) => {
@@ -650,7 +649,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   helpLinkText: {
-    fontSize: 14,
+    fontSize: 20,
     color: '#2e78b7',
   },
 });
