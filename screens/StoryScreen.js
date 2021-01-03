@@ -337,7 +337,8 @@ export default class StoryScreen extends Component {
         transitionTarget: transitionTarget
       };
       console.log(logData);
-      fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/SaveLogStoryTransition', {
+      // fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/SaveLogStoryTransition', {
+      fetch('http://localhost:5001/api/Story/SaveLogStoryTransition', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -349,8 +350,8 @@ export default class StoryScreen extends Component {
       .then((data) => {
         console.log(data);
       });
-      // this.content.scrollToTop(1000);
-      this.refs.storyScrollView.scrollTo({y: 0});
+      console.log("scrolling to top of next page");
+      this.refs.storyScrollView.scrollTo({x: 0, y: 0, animated: false});
       this.setState({
         isContinuingStory: false,
         activeStoryChapter: storyChapter.chapterTitle,

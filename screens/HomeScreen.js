@@ -21,7 +21,7 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      appVersion: 1.12, // update this value when pushing new builds to app stores. Used to force image download.
+      appVersion: 1.13, // update this value when pushing new builds to app stores. Used to force image download.
       loadingData: true,
       loadingDataMessage: "",
       storyIsLoaded: false,
@@ -181,7 +181,8 @@ export default class HomeScreen extends Component {
     this.dataStorageService.setActiveStoryInstanceGuid(storyInstanceGuid);
     var deviceInfo = this.getDeviceInformation(storyInstanceGuid);
     // console.log(deviceInfo);
-    fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/GetStoryActiveConfigurationWithLogging/1', {
+    // fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/Story/GetStoryActiveConfigurationWithLogging/1', {
+    fetch('http://localhost:5001/api/Story/GetStoryActiveConfigurationWithLogging/1', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -235,7 +236,8 @@ export default class HomeScreen extends Component {
 
   getExistingUploadedImages = (onSuccess) => {
     var listStoryImageDetails = [];        
-    fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/story/GetAllStoryImageDetails/1', {
+    // fetch('https://makeyourownadventuremobilebackend.azurewebsites.net/api/story/GetAllStoryImageDetails/1', {
+    fetch('http://localhost:5001/api/story/GetAllStoryImageDetails/1', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -372,7 +374,8 @@ export default class HomeScreen extends Component {
     var originalFilename = imageDetails.imageOriginalFilename;
     var fileExt = "jpg";
     var localStorageFileName = fileName + "." + fileExt;
-    var url = "https://makeyourownadventuremobilebackend.azurewebsites.net/api/story/DownloadFile/" + fileName;
+    // var url = "https://makeyourownadventuremobilebackend.azurewebsites.net/api/story/DownloadFile/" + fileName;
+    var url = "http://localhost:5001/api/story/DownloadFile/" + fileName;
     //var url = "http://localhost:17861/api/story/DownloadFile/" + fileName;
     // console.log("url: " + url);
     // definitely use file.dataDirectory as file.documentsDirectory actually saves to the 

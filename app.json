@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon-512.png",
     "splash": {
@@ -23,8 +23,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "com.cactusfruit.inspectorpssstchapter1",
+      "versionCode": 1
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cactusfruit.inspectorpssstchapter1",
+      "buildNumber": "2.0.1"
     }
   }
 }
